@@ -95,8 +95,8 @@ export default function HomePage() {
         setIsZoomed(true);
         if (cameraRigRef.current && globeGroupRef.current) {
           cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current, () => {
-            // After 3D globe zoom arrives, crossfade into HD satellite map
-            setTimeout(() => setHdMapVisible(true), 400);
+            // Wait 3s after globe zoom lands so user sees the 3D view, then show HD map
+            setTimeout(() => setHdMapVisible(true), 3000);
           });
         }
       }
@@ -144,8 +144,8 @@ export default function HomePage() {
 
         if (cameraRigRef.current && globeGroupRef.current) {
           cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current, () => {
-            // After 3D globe zoom arrives, crossfade into HD satellite map
-            setTimeout(() => setHdMapVisible(true), 400);
+            // Wait 3s after globe zoom lands so user sees the 3D view, then show HD map
+            setTimeout(() => setHdMapVisible(true), 3000);
           });
         }
       },
@@ -177,11 +177,16 @@ export default function HomePage() {
 
   // Close HD satellite map and return to 3D globe orbit
   const handleCloseHdMap = useCallback(() => {
+    // The HdMapOverlay handles its own fade-out animation internally
+    // When it calls onClose after fade-out, we reset everything
     setHdMapVisible(false);
     setIsZoomed(false);
-    if (cameraRigRef.current && globeGroupRef.current) {
-      cameraRigRef.current.resetZoom(globeGroupRef.current);
-    }
+    // Give 800ms for the map's exit animation, then pull camera back
+    setTimeout(() => {
+      if (cameraRigRef.current && globeGroupRef.current) {
+        cameraRigRef.current.resetZoom(globeGroupRef.current);
+      }
+    }, 800);
   }, []);
 
   const handleTargetFound = useCallback((lat: number, lon: number) => {

@@ -123,13 +123,13 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           });
         }
 
-        // Camera zooms towards globe (z: 7.5 — close enough for impact but textures still sharp)
+        // Camera zooms towards globe (z: 6.5 — dramatic close-up before HD satellite map takes over)
         gsap.to(camera.position, {
           x: 0.0,
           y: 0.0,
-          z: 7.5,
-          duration: 2.0,
-          ease: 'power3.inOut',
+          z: 6.5,
+          duration: 3.0,
+          ease: 'power2.inOut',
           onComplete,
         });
 
@@ -138,16 +138,16 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           x: 0.0,
           y: 0.0,
           z: 0.0,
-          duration: 2.0,
-          ease: 'power3.inOut',
+          duration: 3.0,
+          ease: 'power2.inOut',
         });
 
         // Globe rotates to center the exact GPS coordinates right in front of the lens
         gsap.to(globeGroup.rotation, {
           x: targetRotX,
           y: targetRotY,
-          duration: 2.0,
-          ease: 'power3.inOut',
+          duration: 3.0,
+          ease: 'power2.inOut',
         });
       },
       [camera]
