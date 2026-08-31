@@ -28,10 +28,6 @@ const GlobeScene = dynamic(() => import('@/components/globe/GlobeScene'), {
   ),
 });
 
-const HdSatelliteView = dynamic(() => import('@/components/map/HdSatelliteView'), {
-  ssr: false,
-});
-
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>('hero');
@@ -42,7 +38,6 @@ export default function HomePage() {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [visitorLockData, setVisitorLockData] = useState<VisitorLockData | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [isHdMapOpen, setIsHdMapOpen] = useState(false);
 
   const cameraRigRef = useRef<CameraRigHandle>(null);
   const globeGroupRef = useRef<THREE.Group>(null!);
@@ -94,10 +89,7 @@ export default function HomePage() {
         setVisitorLockData(lock);
         setIsZoomed(true);
         if (cameraRigRef.current && globeGroupRef.current) {
-          cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current, () => {
-            // Automatically open HD Satellite map when 3D zoom arrives
-            setTimeout(() => setIsHdMapOpen(true), 350);
-          });
+          cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current);
         }
       }
     } catch {}
@@ -143,10 +135,7 @@ export default function HomePage() {
         setIsZoomed(true);
 
         if (cameraRigRef.current && globeGroupRef.current) {
-          cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current, () => {
-            // Automatically open HD Satellite map when 3D zoom arrives!
-            setTimeout(() => setIsHdMapOpen(true), 350);
-          });
+          cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current);
         }
       },
       () => {
@@ -166,19 +155,13 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, [isMobile, handleAcquireGps]);
 
-  // Reset orbit zoom & close HD map
+  // Reset orbit zoom
   const handleResetZoom = useCallback(() => {
     setIsZoomed(false);
-    setIsHdMapOpen(false);
     if (cameraRigRef.current && globeGroupRef.current) {
       cameraRigRef.current.resetZoom(globeGroupRef.current);
     }
   }, []);
-
-  const handleCloseHdMap = useCallback(() => {
-    setIsHdMapOpen(false);
-    handleResetZoom();
-  }, [handleResetZoom]);
 
   const handleTargetFound = useCallback((lat: number, lon: number) => {
     if (globeGroupRef.current) {
@@ -285,12 +268,6 @@ export default function HomePage() {
         onTargetFound={handleTargetFound}
       />
 
-      {/* High-Definition Real Satellite Recon Viewport (Esri / Maxar) */}
-      <HdSatelliteView
-        data={visitorLockData}
-        isOpen={isHdMapOpen}
-        onClose={handleCloseHdMap}
-      />
 
       {/* Portfolio Footer (contact section only) */}
       <PortfolioFooter activeSection={activeSection} />

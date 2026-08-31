@@ -201,8 +201,8 @@ export default function VisitorTargetLock({ data, isZoomed, onResetZoom }: Visit
           </mesh>
 
           {/* 3D Satellite Dossier HUD */}
-          <Html center position={[0, 0.58, 0]} style={{ pointerEvents: 'auto', zIndex: 120 }}>
-            <div className="font-orbitron text-[8.5px] p-2.5 rounded-xs border border-cyber-green/70 bg-black/90 backdrop-blur-md text-cyber-green select-none whitespace-nowrap shadow-[0_0_25px_rgba(0,255,136,0.35)] animate-in fade-in zoom-in-95 duration-200">
+          <Html center position={[0, 0.22, 0]} distanceFactor={7.5} style={{ pointerEvents: 'auto', zIndex: 120 }}>
+            <div className="font-orbitron text-[9px] p-2.5 rounded-xs border border-cyber-green/70 bg-black/90 backdrop-blur-md text-cyber-green select-none whitespace-nowrap shadow-[0_0_25px_rgba(0,255,136,0.35)] animate-in fade-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between gap-3 font-bold mb-1 pb-1 border-b border-cyber-green/30">
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-cyber-green animate-ping" />

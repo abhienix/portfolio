@@ -98,10 +98,11 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
 
     const zoomToCoordinates = useCallback(
       (lat: number, lon: number, globeGroup: THREE.Group, onComplete?: () => void) => {
-        // Calculate target rotations to center lat/lon facing the camera
+        // Calculate target rotations to center lat/lon directly facing the camera
         const radLon = (lon * Math.PI) / 180;
-        const targetRotY = Math.PI / 2 - radLon;
-        const targetRotX = (lat * Math.PI / 180) * 0.65;
+        const radLat = (lat * Math.PI) / 180;
+        const targetRotY = -Math.PI / 2 - radLon;
+        const targetRotX = -radLat;
 
         // Cinematic chromatic aberration spike on satellite lock
         if (chromCbRef.current) {
@@ -122,12 +123,12 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           });
         }
 
-        // Camera flies close to the Earth (z: 8.0)
+        // Camera flies close to the Earth surface (z: 5.75, right above surface at radius 5.0)
         gsap.to(camera.position, {
           x: 0.0,
           y: 0.0,
-          z: 8.0,
-          duration: 2.2,
+          z: 5.75,
+          duration: 2.4,
           ease: 'power3.inOut',
           onComplete,
         });
@@ -137,15 +138,15 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           x: 0.0,
           y: 0.0,
           z: 0.0,
-          duration: 2.2,
+          duration: 2.4,
           ease: 'power3.inOut',
         });
 
-        // Globe rotates to the exact GPS coordinates
+        // Globe rotates to center the exact GPS coordinates right in front of the lens
         gsap.to(globeGroup.rotation, {
           x: targetRotX,
           y: targetRotY,
-          duration: 2.2,
+          duration: 2.4,
           ease: 'power3.inOut',
         });
       },
