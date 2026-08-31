@@ -28,6 +28,10 @@ const GlobeScene = dynamic(() => import('@/components/globe/GlobeScene'), {
   ),
 });
 
+const HdMapOverlay = dynamic(() => import('@/components/map/HdMapOverlay'), {
+  ssr: false,
+});
+
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>('hero');
@@ -38,6 +42,7 @@ export default function HomePage() {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [visitorLockData, setVisitorLockData] = useState<VisitorLockData | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [hdMapVisible, setHdMapVisible] = useState(false);
 
   const cameraRigRef = useRef<CameraRigHandle>(null);
   const globeGroupRef = useRef<THREE.Group>(null!);
@@ -89,7 +94,10 @@ export default function HomePage() {
         setVisitorLockData(lock);
         setIsZoomed(true);
         if (cameraRigRef.current && globeGroupRef.current) {
-          cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current);
+          cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current, () => {
+            // After 3D globe zoom arrives, crossfade into HD satellite map
+            setTimeout(() => setHdMapVisible(true), 400);
+          });
         }
       }
     } catch {}
@@ -135,7 +143,10 @@ export default function HomePage() {
         setIsZoomed(true);
 
         if (cameraRigRef.current && globeGroupRef.current) {
-          cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current);
+          cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current, () => {
+            // After 3D globe zoom arrives, crossfade into HD satellite map
+            setTimeout(() => setHdMapVisible(true), 400);
+          });
         }
       },
       () => {
@@ -157,6 +168,16 @@ export default function HomePage() {
 
   // Reset orbit zoom
   const handleResetZoom = useCallback(() => {
+    setIsZoomed(false);
+    setHdMapVisible(false);
+    if (cameraRigRef.current && globeGroupRef.current) {
+      cameraRigRef.current.resetZoom(globeGroupRef.current);
+    }
+  }, []);
+
+  // Close HD satellite map and return to 3D globe orbit
+  const handleCloseHdMap = useCallback(() => {
+    setHdMapVisible(false);
     setIsZoomed(false);
     if (cameraRigRef.current && globeGroupRef.current) {
       cameraRigRef.current.resetZoom(globeGroupRef.current);
@@ -268,6 +289,12 @@ export default function HomePage() {
         onTargetFound={handleTargetFound}
       />
 
+      {/* Full-screen HD Satellite Map Crossfade (appears after 3D globe zoom) */}
+      <HdMapOverlay
+        data={visitorLockData}
+        visible={hdMapVisible}
+        onClose={handleCloseHdMap}
+      />
 
       {/* Portfolio Footer (contact section only) */}
       <PortfolioFooter activeSection={activeSection} />

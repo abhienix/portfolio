@@ -123,12 +123,12 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           });
         }
 
-        // Camera flies close to the Earth surface (z: 5.75, right above surface at radius 5.0)
+        // Camera zooms towards globe (z: 7.5 — close enough for impact but textures still sharp)
         gsap.to(camera.position, {
           x: 0.0,
           y: 0.0,
-          z: 5.75,
-          duration: 2.4,
+          z: 7.5,
+          duration: 2.0,
           ease: 'power3.inOut',
           onComplete,
         });
@@ -138,7 +138,7 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
           x: 0.0,
           y: 0.0,
           z: 0.0,
-          duration: 2.4,
+          duration: 2.0,
           ease: 'power3.inOut',
         });
 
@@ -146,7 +146,7 @@ const CameraRig = forwardRef<CameraRigHandle, CameraRigProps>(
         gsap.to(globeGroup.rotation, {
           x: targetRotX,
           y: targetRotY,
-          duration: 2.4,
+          duration: 2.0,
           ease: 'power3.inOut',
         });
       },
