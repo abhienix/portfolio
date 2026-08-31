@@ -1,0 +1,341 @@
+/* ═══════════════════════════════════════════════════════
+   CYBER THREAT INTELLIGENCE DASHBOARD — GLOBAL STYLES
+   ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Custom Properties ── */
+:root {
+  --cyber-bg: #020B18;
+  --cyber-ocean: #041428;
+  --cyber-land: #0A2240;
+  --cyber-cyan: #00F5FF;
+  --cyber-red: #FF3B3B;
+  --cyber-orange: #FF8C00;
+  --cyber-green: #00FF88;
+  --cyber-text: #E0F4FF;
+  --cyber-dim: #94BBD9;
+  --cyber-secondary: #CBD5E1;
+  --cyber-border: #0E3A6E;
+  --glass-bg: rgba(2, 11, 24, 0.88);
+  --glass-border: rgba(0, 245, 255, 0.12);
+  --glass-blur: blur(24px) saturate(180%);
+}
+
+/* ── Base Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  background: var(--cyber-bg);
+  color: var(--cyber-text);
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  height: 100%;
+  cursor: none;
+}
+
+body {
+  background: var(--cyber-bg);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Custom Cursor ── */
+.cursor-crosshair {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-crosshair::before,
+.cursor-crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--cyber-cyan);
+}
+
+.cursor-crosshair::before {
+  width: 1px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+}
+
+.cursor-crosshair::after {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+  left: 0;
+}
+
+.cursor-trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 245, 255, 0.5);
+  transform: translate(-50%, -50%);
+}
+
+/* ── Glassmorphism Panel ── */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+}
+
+/* ── Skill Bar ── */
+.skill-bar-fill {
+  position: relative;
+  height: 3px;
+  background: rgba(0, 245, 255, 0.12);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.skill-bar-fill-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyber-cyan), rgba(0, 245, 255, 0.4));
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Terminal ── */
+.terminal-window {
+  font-family: var(--font-orbitron), 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cyber-cyan);
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+  caret-color: var(--cyber-cyan);
+}
+
+/* ── Cert Keycard 3D Flip ── */
+.keycard-wrapper {
+  perspective: 800px;
+}
+
+.keycard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.keycard-wrapper:hover .keycard-inner {
+  transform: rotateY(180deg);
+}
+
+.keycard-front,
+.keycard-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.keycard-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Hexagonal Clip ── */
+.hex-clip {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* ── Scanline Sweep (camera transition) ── */
+.scanline-sweep {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: scanline-anim 0.4s linear forwards;
+}
+
+@keyframes scanline-anim {
+  0%   { top: 0; opacity: 0.35; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ── Nav button border draw ── */
+.btn-border-draw {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-border-draw::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: linear-gradient(var(--cyber-bg), var(--cyber-bg)) padding-box,
+              linear-gradient(90deg, var(--cyber-cyan), var(--cyber-cyan)) border-box;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.4s ease;
+}
+
+.btn-border-draw:hover::before {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ── Orbit Compass ── */
+@keyframes compass-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.compass-ring {
+  animation: compass-rotate 12s linear infinite;
+}
+
+/* ── Blinking Cursor ── */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* ── Pulsing Available Dot ── */
+@keyframes beacon {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(0, 255, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+.beacon-dot {
+  animation: beacon 2s ease-out infinite;
+}
+
+/* ── Number ticker flash ── */
+@keyframes tick-flash {
+  0%   { color: var(--cyber-cyan); }
+  100% { color: var(--cyber-text); }
+}
+
+.tick-flash {
+  animation: tick-flash 0.2s ease-out forwards;
+}
+
+/* ── Input underline style ── */
+.cyber-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 245, 255, 0.3);
+  color: var(--cyber-text);
+  outline: none;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 14px;
+  padding: 6px 0;
+  width: 100%;
+  transition: border-color 0.3s;
+}
+
+.cyber-input:focus {
+  border-bottom-color: var(--cyber-cyan);
+}
+
+.cyber-input::placeholder {
+  color: var(--cyber-dim);
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  z-index: 10000;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 11px;
+  color: var(--cyber-green);
+  pointer-events: none;
+}
+
+/* ── MOBILE layout ── */
+@media (max-width: 767px) {
+  html, body { overflow-y: auto; cursor: auto; scroll-behavior: smooth; }
+  .cursor-crosshair, .cursor-trail { display: none !important; }
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--cyber-bg); }
+::-webkit-scrollbar-thumb { background: var(--cyber-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyber-dim); }
+
+/* ── Selection ── */
+::selection { background: rgba(0, 245, 255, 0.2); color: var(--cyber-cyan); }
+
+/* ── Keyboard Focus Visibility ── */
+:focus-visible {
+  outline: 2px solid var(--cyber-cyan);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Suppress focus ring for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Reduced Motion Support ── */
+@media (prefers-reduced-motion: reduce) {
+  /* Pause animations but keep layout and opacity intact */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Keep beacon dots visible but static */
+  .beacon-dot {
+    animation: none !important;
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.3);
+  }
+
+  /* Keep compass static */
+  .compass-ring {
+    animation: none !important;
+  }
+
+  /* Keep skill bar fills visible statically */
+  .skill-bar-fill-inner {
+    transform: scaleX(1) !important;
+    transition: none !important;
+  }
+}
+

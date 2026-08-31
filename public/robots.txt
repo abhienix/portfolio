@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abhimanyu-kumar.vercel.app/sitemap.xml
