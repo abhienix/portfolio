@@ -132,32 +132,24 @@ export default function HeroOverlay({
               </div>
 
               {visitorLockData ? (
-                <div className="space-y-1">
-                  <div className="text-[8.5px] text-white font-bold truncate">
-                    {visitorLockData.city}, {visitorLockData.country}
+                <div className="flex items-center justify-between gap-1.5 pt-0.5">
+                  <div className="min-w-0">
+                    <div className="text-[8.5px] text-white font-bold truncate">
+                      {visitorLockData.city}, {visitorLockData.country}
+                    </div>
+                    <div className="text-[7px] text-slate-400">
+                      {visitorLockData.lat.toFixed(2)}°N, {visitorLockData.lon.toFixed(2)}°E · SATELLITE LOCKED
+                    </div>
                   </div>
-                  <div className="text-[7.5px] text-slate-300">
-                    {visitorLockData.lat.toFixed(4)}°N, {visitorLockData.lon.toFixed(4)}°E
-                  </div>
-                  <div className="flex items-center gap-1.5 pt-1">
-                    {isZoomed ? (
-                      <button
-                        type="button"
-                        onClick={onResetZoom}
-                        className="w-full py-1 text-[7.5px] font-orbitron font-bold text-slate-300 hover:text-white border border-slate-700 bg-black/60 rounded-xs transition-colors cursor-pointer pointer-events-auto"
-                      >
-                        ↺ RESET ORBIT VIEW
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={onAcquireGps}
-                        className="w-full py-1 text-[7.5px] font-orbitron font-bold text-black bg-cyber-green hover:bg-white rounded-xs transition-colors cursor-pointer pointer-events-auto shadow-[0_0_10px_rgba(0,255,136,0.3)]"
-                      >
-                        ◉ ZOOM TO LOCATION
-                      </button>
-                    )}
-                  </div>
+                  {!isZoomed && onAcquireGps && (
+                    <button
+                      type="button"
+                      onClick={onAcquireGps}
+                      className="px-2 py-0.5 text-[7px] font-orbitron font-bold text-black bg-cyber-green hover:bg-white rounded-xs transition-colors cursor-pointer pointer-events-auto flex-shrink-0"
+                    >
+                      ZOOM
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-1.5">

@@ -134,19 +134,22 @@ export default function VisitorTargetLock({ data, isZoomed, onResetZoom }: Visit
       {/* ── STATION PUNE COMMAND BASE ANCHOR ── */}
       <group position={punePos} quaternion={puneQuat}>
         <mesh>
-          <sphereGeometry args={[0.07, 16, 16]} />
+          <sphereGeometry args={[0.065, 16, 16]} />
           <meshBasicMaterial color="#00F5FF" />
         </mesh>
         <mesh>
-          <ringGeometry args={[0.09, 0.12, 32]} />
+          <ringGeometry args={[0.08, 0.11, 32]} />
           <meshBasicMaterial color="#00F5FF" transparent opacity={0.6} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
-        <Html center position={[0, 0.36, 0]} style={{ pointerEvents: 'none' }}>
-          <div className="font-orbitron text-[7.5px] tracking-widest text-cyber-cyan bg-black/85 border border-cyber-cyan/50 px-2 py-0.5 rounded-xs shadow-[0_0_12px_rgba(0,245,255,0.4)] whitespace-nowrap select-none flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyber-green beacon-dot" />
-            <span>STATION PUNE // COMMAND HUB</span>
-          </div>
-        </Html>
+        {/* Only show Station Pune text label when not zoomed in close, preventing text overlap */}
+        {!isZoomed && (
+          <Html center position={[0, 0.36, 0]} style={{ pointerEvents: 'none' }}>
+            <div className="font-orbitron text-[7.5px] tracking-widest text-cyber-cyan bg-black/85 border border-cyber-cyan/50 px-2 py-0.5 rounded-xs shadow-[0_0_12px_rgba(0,245,255,0.4)] whitespace-nowrap select-none flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyber-green beacon-dot" />
+              <span>STATION PUNE // COMMAND HUB</span>
+            </div>
+          </Html>
+        )}
       </group>
 
       {/* ── LASER LINK TO VISITOR IF DIFFERENT FROM PUNE ── */}
@@ -169,7 +172,7 @@ export default function VisitorTargetLock({ data, isZoomed, onResetZoom }: Visit
         <group position={visitorPos} quaternion={groupQuaternion}>
           {/* Target Center Dot */}
           <mesh>
-            <sphereGeometry args={[0.08, 16, 16]} />
+            <sphereGeometry args={[0.075, 16, 16]} />
             <meshBasicMaterial color="#00FF88" />
           </mesh>
 
@@ -191,44 +194,38 @@ export default function VisitorTargetLock({ data, isZoomed, onResetZoom }: Visit
             <meshBasicMaterial
               color="#00FF88"
               transparent
-              opacity={0.6}
+              opacity={0.5}
               side={THREE.DoubleSide}
               depthWrite={false}
             />
           </mesh>
 
           {/* 3D Satellite Dossier HUD */}
-          <Html center position={[0, 0.52, 0]} style={{ pointerEvents: 'auto', zIndex: 120 }}>
-            <div className="font-orbitron text-[9px] p-3 rounded-xs border-2 border-cyber-green bg-black/95 text-cyber-green select-none whitespace-nowrap shadow-[0_0_30px_rgba(0,255,136,0.45)] animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between gap-3 font-bold mb-1.5 pb-1 border-b border-cyber-green/40">
+          <Html center position={[0, 0.58, 0]} style={{ pointerEvents: 'auto', zIndex: 120 }}>
+            <div className="font-orbitron text-[8.5px] p-2.5 rounded-xs border border-cyber-green/70 bg-black/90 backdrop-blur-md text-cyber-green select-none whitespace-nowrap shadow-[0_0_25px_rgba(0,255,136,0.35)] animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between gap-3 font-bold mb-1 pb-1 border-b border-cyber-green/30">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-cyber-green animate-ping" />
-                  <span className="tracking-wider">SATELLITE FIX: TARGET LOCKED</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyber-green animate-ping" />
+                  <span className="tracking-wider text-white">SATELLITE FIX: TARGET LOCKED</span>
                 </div>
-                <span className="font-mono text-[8px] bg-cyber-green/20 text-cyber-green border border-cyber-green/60 px-1.5 py-0.5 rounded-xs font-bold">
-                  {data.source === 'gps' ? 'PRECISE GPS' : 'NETWORK GEOIP'}
+                <span className="font-mono text-[7.5px] bg-cyber-green/20 text-cyber-green border border-cyber-green/50 px-1 py-0.2 rounded-xs font-bold">
+                  {data.source === 'gps' ? 'DEVICE GPS' : 'NETWORK GEOIP'}
                 </span>
               </div>
 
-              <div className="font-mono text-[9px] text-white font-bold mb-0.5">
-                LOCATION: {data.city}, {data.country}
+              <div className="font-mono text-[9px] text-cyber-cyan font-bold mb-0.5">
+                {data.city}, {data.country}
               </div>
 
-              <div className="font-mono text-[8px] text-slate-300 mb-0.5">
-                COORDINATES: {data.lat.toFixed(4)}°N, {data.lon.toFixed(4)}°E
+              <div className="font-mono text-[7.5px] text-slate-300 mb-0.5">
+                {data.lat.toFixed(4)}°N, {data.lon.toFixed(4)}°E {data.accuracyMeters ? `(±${Math.round(data.accuracyMeters)}m)` : ''}
               </div>
-
-              {data.accuracyMeters && (
-                <div className="font-mono text-[8px] text-slate-400 mb-1.5">
-                  ACCURACY: &plusmn;{Math.round(data.accuracyMeters)} METERS
-                </div>
-              )}
 
               {isZoomed && onResetZoom && (
                 <button
                   type="button"
                   onClick={onResetZoom}
-                  className="mt-1.5 w-full py-1 text-[8px] font-orbitron font-bold text-black bg-cyber-green hover:bg-white transition-colors rounded-xs tracking-wider cursor-pointer pointer-events-auto"
+                  className="mt-1.5 w-full py-1 text-[7.5px] font-orbitron font-bold text-black bg-cyber-green hover:bg-white transition-colors rounded-xs tracking-wider cursor-pointer pointer-events-auto"
                 >
                   ↺ RESET ORBIT VIEW
                 </button>
