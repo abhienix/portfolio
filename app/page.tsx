@@ -28,10 +28,6 @@ const GlobeScene = dynamic(() => import('@/components/globe/GlobeScene'), {
   ),
 });
 
-const HdMapOverlay = dynamic(() => import('@/components/map/HdMapOverlay'), {
-  ssr: false,
-});
-
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>('hero');
@@ -42,7 +38,6 @@ export default function HomePage() {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [visitorLockData, setVisitorLockData] = useState<VisitorLockData | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [hdMapVisible, setHdMapVisible] = useState(false);
 
   const cameraRigRef = useRef<CameraRigHandle>(null);
   const globeGroupRef = useRef<THREE.Group>(null!);
@@ -95,8 +90,13 @@ export default function HomePage() {
         setIsZoomed(true);
         if (cameraRigRef.current && globeGroupRef.current) {
           cameraRigRef.current.zoomToCoordinates(v.lat, v.lon, globeGroupRef.current, () => {
-            // Wait 3s after globe zoom lands so user sees the 3D view, then show HD map
-            setTimeout(() => setHdMapVisible(true), 3000);
+            // Hold zoomed view for 4s so visitor sees their location, then auto pull back
+            setTimeout(() => {
+              setIsZoomed(false);
+              if (cameraRigRef.current && globeGroupRef.current) {
+                cameraRigRef.current.resetZoom(globeGroupRef.current);
+              }
+            }, 4000);
           });
         }
       }
@@ -144,8 +144,13 @@ export default function HomePage() {
 
         if (cameraRigRef.current && globeGroupRef.current) {
           cameraRigRef.current.zoomToCoordinates(lat, lon, globeGroupRef.current, () => {
-            // Wait 3s after globe zoom lands so user sees the 3D view, then show HD map
-            setTimeout(() => setHdMapVisible(true), 3000);
+            // Hold zoomed view for 4s so visitor sees their location, then auto pull back
+            setTimeout(() => {
+              setIsZoomed(false);
+              if (cameraRigRef.current && globeGroupRef.current) {
+                cameraRigRef.current.resetZoom(globeGroupRef.current);
+              }
+            }, 4000);
           });
         }
       },
@@ -169,24 +174,9 @@ export default function HomePage() {
   // Reset orbit zoom
   const handleResetZoom = useCallback(() => {
     setIsZoomed(false);
-    setHdMapVisible(false);
     if (cameraRigRef.current && globeGroupRef.current) {
       cameraRigRef.current.resetZoom(globeGroupRef.current);
     }
-  }, []);
-
-  // Close HD satellite map and return to 3D globe orbit
-  const handleCloseHdMap = useCallback(() => {
-    // The HdMapOverlay handles its own fade-out animation internally
-    // When it calls onClose after fade-out, we reset everything
-    setHdMapVisible(false);
-    setIsZoomed(false);
-    // Give 800ms for the map's exit animation, then pull camera back
-    setTimeout(() => {
-      if (cameraRigRef.current && globeGroupRef.current) {
-        cameraRigRef.current.resetZoom(globeGroupRef.current);
-      }
-    }, 800);
   }, []);
 
   const handleTargetFound = useCallback((lat: number, lon: number) => {
@@ -294,12 +284,7 @@ export default function HomePage() {
         onTargetFound={handleTargetFound}
       />
 
-      {/* Full-screen HD Satellite Map Crossfade (appears after 3D globe zoom) */}
-      <HdMapOverlay
-        data={visitorLockData}
-        visible={hdMapVisible}
-        onClose={handleCloseHdMap}
-      />
+
 
       {/* Portfolio Footer (contact section only) */}
       <PortfolioFooter activeSection={activeSection} />
