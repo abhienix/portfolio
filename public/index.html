@@ -4,16 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ABHIMANYU KUMAR // OSINT & CYBERSECURITY OPERATIONS</title>
-  <meta name="description" content="Cybersecurity Operations Center & Operational Intelligence Dashboard for Abhimanyu Kumar — SOC Analyst, DevSecOps Engineer, and Security Researcher." />
+  <meta name="description" content="Operational Cyber Threat Intelligence Dashboard & Candidate Dossier for Abhimanyu Kumar — SOC Analyst, DevSecOps Engineer, and Security Researcher." />
 
-  <!-- Fonts -->
+  <!-- Fonts: JetBrains Mono + Inter + Orbitron -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet" />
 
-  <!-- Three.js & Globe.gl via CDN -->
+  <!-- Three.js, Globe.gl & MapLibre GL via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script src="https://unpkg.com/globe.gl@2.32.1/dist/globe.gl.min.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -138,28 +140,12 @@
       box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
     }
 
-    /* ── SCROLLBARS ── */
-    ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--cyan-dim);
-      border-radius: 2px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--cyan-primary);
-    }
-
     /* ── SLIDE-OVER PANELS ── */
     .side-panel {
       position: fixed;
       top: 48px;
       bottom: 34px;
-      width: 420px;
+      width: 440px;
       max-width: 90vw;
       background: var(--bg-panel);
       backdrop-filter: blur(28px);
@@ -177,13 +163,6 @@
     .side-panel.right-panel.open {
       transform: translateX(0);
     }
-    .side-panel.left-panel {
-      left: 0;
-      transform: translateX(-105%);
-    }
-    .side-panel.left-panel.open {
-      transform: translateX(0);
-    }
 
     /* ── KEYFRAME ANIMATIONS ── */
     @keyframes radarSpin {
@@ -194,25 +173,9 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.92); }
     }
-    @keyframes textFlicker {
-      0%, 100% { opacity: 1; }
-      3% { opacity: 0.4; }
-      6% { opacity: 1; }
-      7% { opacity: 0.2; }
-      8% { opacity: 1; }
-      9% { opacity: 0.9; }
-      10% { opacity: 1; }
-      89% { opacity: 1; }
-      90% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
     @keyframes marquee {
       0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
-    }
-    @keyframes expandWidth {
-      from { width: 0%; }
-      to { width: 100%; }
     }
   </style>
 </head>
@@ -239,7 +202,7 @@
       <div style="position: absolute; inset: 48px; border: 1.5px dashed rgba(0, 245, 255, 0.4); border-radius: 50%; animation: radarSpin 12s linear infinite reverse;"></div>
       <div style="position: absolute; inset: 72px; background: radial-gradient(circle, rgba(0, 245, 255, 0.12) 0%, transparent 70%); border-radius: 50%;"></div>
 
-      <!-- Eye / Shield Center Emblem -->
+      <!-- Shield Center Emblem -->
       <div style="position: relative; z-index: 2; text-align: center;">
         <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#00F5FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 12px rgba(0, 245, 255, 0.7));">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -317,7 +280,7 @@
       </div>
     </div>
 
-    <!-- Center/Right Status Chips -->
+    <!-- Center/Right Status Chips (Live API Integrated) -->
     <div style="display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 9px;">
       <!-- UTC Zulu Clock -->
       <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border-gold); border-radius: 2px; color: var(--gold-primary); font-weight: 700;">
@@ -336,9 +299,14 @@
         7/7 LAYERS
       </div>
 
+      <!-- Live Solar Space Weather -->
+      <div id="chip-space-weather" class="hidden-mobile" style="padding: 4px 10px; background: rgba(255, 140, 0, 0.08); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 2px; color: var(--alert-orange); font-weight: 700;">
+        SOLAR: Kp1.3
+      </div>
+
       <!-- Entities Count -->
       <div class="hidden-mobile" style="padding: 4px 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2px; color: var(--text-secondary);">
-        <strong style="color: var(--alert-green);">1,121</strong> ENTITIES
+        <strong id="entity-counter" style="color: var(--alert-green);">1,121</strong> ENTITIES
       </div>
     </div>
 
@@ -375,7 +343,6 @@
     border-radius: 4px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
   ">
-    <!-- Header Icon -->
     <div style="text-align: center; padding-bottom: 4px; border-bottom: 1px solid rgba(0, 245, 255, 0.2); margin-bottom: 2px;">
       <i data-lucide="layers" style="width: 15px; height: 15px; color: var(--cyan-primary); margin: 0 auto; display: block;"></i>
       <span style="font-family: 'Orbitron', sans-serif; font-size: 6.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; display: block; margin-top: 2px;">INTEL</span>
@@ -408,21 +375,21 @@
       <span style="position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: #ff3b3b;"></span>
     </button>
 
-    <!-- Layer 4: CCTV / OSINT Nodes -->
-    <button class="layer-btn active" data-layer="cctv" onclick="toggleLayer('cctv')" style="
-      position: relative; width: 34px; height: 34px; border-radius: 3px; border: 1px solid var(--cyan-primary); background: rgba(0, 245, 255, 0.15); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(0, 245, 255, 0.35); transition: all 0.2s;
-    " title="Layer 4: OSINT Surveillance & CCTV Hubs (9 nodes)">
-      <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
-      <span style="position: absolute; top: -3px; right: -3px; font-size: 7px; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: var(--cyan-primary); color: #000; padding: 1px 3px; border-radius: 2px;">9</span>
+    <!-- Layer 4: Flights (OpenSky) -->
+    <button class="layer-btn active" data-layer="flights" onclick="toggleLayer('flights')" style="
+      position: relative; width: 34px; height: 34px; border-radius: 3px; border: 1px solid #00f5ff; background: rgba(0, 245, 255, 0.15); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(0, 245, 255, 0.35); transition: all 0.2s;
+    " title="Layer 4: OpenSky Live Aircraft Flight Corridor (500+ airborne)">
+      <i data-lucide="plane" style="width: 16px; height: 16px;"></i>
+      <span style="position: absolute; top: -3px; right: -3px; font-size: 6.5px; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: #00f5ff; color: #000; padding: 1px 2px; border-radius: 2px;">500+</span>
       <span style="position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: #00f5ff;"></span>
     </button>
 
-    <!-- Layer 5: Satellites -->
-    <button class="layer-btn active" data-layer="satellites" onclick="toggleLayer('satellites')" style="
+    <!-- Layer 5: Earthquakes (USGS) -->
+    <button class="layer-btn active" data-layer="earthquakes" onclick="toggleLayer('earthquakes')" style="
       position: relative; width: 34px; height: 34px; border-radius: 3px; border: 1px solid var(--alert-orange); background: rgba(255, 140, 0, 0.15); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(255, 140, 0, 0.35); transition: all 0.2s;
-    " title="Layer 5: Defense & Recon Satellites (3 orbits)">
-      <i data-lucide="satellite" style="width: 16px; height: 16px;"></i>
-      <span style="position: absolute; top: -3px; right: -3px; font-size: 7px; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: var(--alert-orange); color: #000; padding: 1px 3px; border-radius: 2px;">3</span>
+    " title="Layer 5: USGS Real-Time Earthquakes (100 alerts)">
+      <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
+      <span style="position: absolute; top: -3px; right: -3px; font-size: 7px; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: var(--alert-orange); color: #000; padding: 1px 3px; border-radius: 2px;">100</span>
       <span style="position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: #ff8c00;"></span>
     </button>
 
@@ -589,28 +556,24 @@
       </a>
     </div>
 
-    <!-- Center: Continuous Live Threat Ticker -->
+    <!-- Center: Continuous Live Threat Ticker (with Crypto & Earthquakes) -->
     <div style="flex: 1; overflow: hidden; white-space: nowrap; margin: 0 16px; position: relative;">
       <div id="ticker-content" style="
         display: inline-block;
         white-space: nowrap;
-        animation: marquee 45s linear infinite;
+        animation: marquee 50s linear infinite;
         font-family: 'JetBrains Mono', monospace;
         font-size: 9.5px;
       ">
+        <span id="ticker-crypto" style="color: #00ff88; font-weight: bold;">$BTC: $98.4K +2.4% &middot; $ETH: $3,420 +1.1% &middot; $SOL: $195 +3.9%</span> &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #ff3b3b; font-weight: bold;">🔴 [CISA KEV] CVE-2024-38077:</span> Windows RDP Licensing Service RCE [CVSS 9.8] ACTIVELY EXPLOITED &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #00f5ff; font-weight: bold;">🛡️ [SECUREFLOW]</span> DevSecOps CI/CD Pipeline with Trivy + Semgrep + Gitleaks Gating [ACTIVE] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #ff8c00; font-weight: bold;">🟠 [SENTRYVAULT]</span> Wazuh SIEM Threat Detection & Suricata Automated Response Platform [MONITORING] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #00ff88; font-weight: bold;">🟢 [RED FLAG DETECTOR]</span> Dual-Layer Phishing & Threat Intelligence Aggregator [LIVE] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #d4af37; font-weight: bold;">⚡ [OPERATOR]</span> ABHIMANYU KUMAR &middot; CDAC ACTS PG-DITISS 2026 &middot; SOC ANALYST &nbsp;&nbsp;&middot;&nbsp;&nbsp;
         <span style="color: #a5f3fc;">📧 [COMMS]</span> AVAILABLE FOR OPPORTUNITIES: abhimanyu9272@gmail.com &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <!-- Repeat for continuous seamless loop -->
-        <span style="color: #ff3b3b; font-weight: bold;">🔴 [CISA KEV] CVE-2024-38077:</span> Windows RDP Licensing Service RCE [CVSS 9.8] ACTIVELY EXPLOITED &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <span style="color: #00f5ff; font-weight: bold;">🛡️ [SECUREFLOW]</span> DevSecOps CI/CD Pipeline with Trivy + Semgrep + Gitleaks Gating [ACTIVE] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <span style="color: #ff8c00; font-weight: bold;">🟠 [SENTRYVAULT]</span> Wazuh SIEM Threat Detection & Suricata Automated Response Platform [MONITORING] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <span style="color: #00ff88; font-weight: bold;">🟢 [RED FLAG DETECTOR]</span> Dual-Layer Phishing & Threat Intelligence Aggregator [LIVE] &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <span style="color: #d4af37; font-weight: bold;">⚡ [OPERATOR]</span> ABHIMANYU KUMAR &middot; CDAC ACTS PG-DITISS 2026 &middot; SOC ANALYST &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        <span style="color: #a5f3fc;">📧 [COMMS]</span> AVAILABLE FOR OPPORTUNITIES: abhimanyu9272@gmail.com
+        <span style="color: #ff3b3b; font-weight: bold;">🔴 [CISA KEV] CVE-2024-6387:</span> OpenSSH Server Signal Handler RCE &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+        <span style="color: #00f5ff; font-weight: bold;">🛰️ [OPENSKY]</span> 500+ Live Aircraft Monitored
       </div>
     </div>
 
@@ -630,7 +593,6 @@
   <div id="about-panel" class="side-panel right-panel">
     <div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
     
-    <!-- Panel Header -->
     <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-primary); display: flex; align-items: center; justify-content: space-between; background: rgba(0, 245, 255, 0.05);">
       <div style="display: flex; align-items: center; gap: 8px;">
         <i data-lucide="user" style="width: 15px; height: 15px; color: var(--cyan-primary);"></i>
@@ -639,9 +601,7 @@
       <button onclick="closeAllPanels()" style="background: none; border: none; color: #ff3b3b; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
 
-    <!-- Panel Scrollable Content -->
     <div style="flex: 1; overflow-y: auto; padding: 18px;">
-      <!-- Profile Avatar & Bio -->
       <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 18px;">
         <div style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--cyan-primary); padding: 2px; box-shadow: 0 0 18px var(--cyan-glow); background: #0c1222; display: flex; align-items: center; justify-content: center;">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00F5FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -656,18 +616,15 @@
         </div>
       </div>
 
-      <!-- Bio Box -->
       <div style="padding: 12px; background: rgba(0, 245, 255, 0.04); border: 1px solid rgba(0, 245, 255, 0.2); border-radius: 3px; font-size: 10.5px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px;">
-        Cybersecurity operations engineer specialized in <strong>SOC threat monitoring</strong>, <strong>automated DevSecOps CI/CD pipelines</strong>, and <strong>network security defense</strong>. Experienced with SIEM correlation (Wazuh), IDS/IPS (Suricata), vulnerability gating (Semgrep/Trivy/OWASP ZAP), and Linux infrastructure hardening.
+        Cybersecurity operations engineer focused on <strong>SOC threat monitoring</strong>, <strong>automated DevSecOps CI/CD security gating</strong>, and <strong>threat intelligence</strong>. Experienced with SIEM correlation (Wazuh), IDS/IPS (Suricata), vulnerability gating (Semgrep/Trivy/OWASP ZAP), and Linux infrastructure hardening.
       </div>
 
-      <!-- Deployment History & Education Timeline -->
       <div style="font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: var(--gold-primary); letter-spacing: 0.15em; margin-bottom: 12px;">
         // DEPLOYMENT &amp; EDUCATION TIMELINE
       </div>
 
       <div style="position: relative; padding-left: 18px; border-left: 1.5px solid var(--border-primary); margin-left: 6px; display: flex; flex-direction: column; gap: 14px;">
-        <!-- Timeline 1 -->
         <div style="position: relative;">
           <span style="position: absolute; left: -22px; top: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--alert-green); box-shadow: 0 0 8px var(--alert-green);"></span>
           <div style="font-size: 9px; font-weight: 700; color: var(--alert-green); font-family: 'Orbitron', sans-serif;">2026 // ONGOING</div>
@@ -675,7 +632,6 @@
           <div style="font-size: 9.5px; color: var(--cyan-primary);">C-DAC ACTS Pune &middot; 80.0% Aggregate</div>
         </div>
 
-        <!-- Timeline 2 -->
         <div style="position: relative;">
           <span style="position: absolute; left: -22px; top: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan-primary);"></span>
           <div style="font-size: 9px; font-weight: 700; color: var(--cyan-primary); font-family: 'Orbitron', sans-serif;">MAY 2025 &ndash; FEB 2026</div>
@@ -683,7 +639,6 @@
           <div style="font-size: 9.5px; color: var(--text-secondary);">Sonsolite Infra &amp; Power Solutions (1 Year Active Tenure)</div>
         </div>
 
-        <!-- Timeline 3 -->
         <div style="position: relative;">
           <span style="position: absolute; left: -22px; top: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-primary);"></span>
           <div style="font-size: 9px; font-weight: 700; color: var(--gold-primary); font-family: 'Orbitron', sans-serif;">2024</div>
@@ -691,7 +646,6 @@
           <div style="font-size: 9.5px; color: var(--text-secondary);">Marwari College, Ranchi University &middot; 73.25%</div>
         </div>
 
-        <!-- Timeline 4 -->
         <div style="position: relative;">
           <span style="position: absolute; left: -22px; top: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-primary);"></span>
           <div style="font-size: 9px; font-weight: 700; color: var(--gold-primary); font-family: 'Orbitron', sans-serif;">2022</div>
@@ -707,7 +661,6 @@
   <div id="skills-panel" class="side-panel right-panel">
     <div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
     
-    <!-- Panel Header -->
     <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-primary); display: flex; align-items: center; justify-content: space-between; background: rgba(0, 245, 255, 0.05);">
       <div style="display: flex; align-items: center; gap: 8px;">
         <i data-lucide="bar-chart-3" style="width: 15px; height: 15px; color: var(--cyan-primary);"></i>
@@ -716,9 +669,7 @@
       <button onclick="closeAllPanels()" style="background: none; border: none; color: #ff3b3b; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
 
-    <!-- Panel Scrollable Content -->
     <div style="flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 18px;">
-      <!-- Group 1: SIEM & Detection -->
       <div>
         <div style="font-family: 'Orbitron', sans-serif; font-size: 9.5px; font-weight: 800; color: var(--cyan-primary); letter-spacing: 0.15em; margin-bottom: 8px;">
           // SIEM, DETECTION &amp; MONITORING
@@ -739,7 +690,6 @@
         </div>
       </div>
 
-      <!-- Group 2: DevSecOps -->
       <div>
         <div style="font-family: 'Orbitron', sans-serif; font-size: 9.5px; font-weight: 800; color: var(--gold-primary); letter-spacing: 0.15em; margin-bottom: 8px;">
           // DEVSECOPS &amp; CI/CD SECURITY
@@ -768,7 +718,6 @@
         </div>
       </div>
 
-      <!-- Group 3: Network & Recon -->
       <div>
         <div style="font-family: 'Orbitron', sans-serif; font-size: 9.5px; font-weight: 800; color: var(--alert-green); letter-spacing: 0.15em; margin-bottom: 8px;">
           // NETWORK SECURITY &amp; RECON
@@ -789,7 +738,6 @@
         </div>
       </div>
 
-      <!-- Group 4: Scripting & Hardening -->
       <div>
         <div style="font-family: 'Orbitron', sans-serif; font-size: 9.5px; font-weight: 800; color: #fff; letter-spacing: 0.15em; margin-bottom: 8px;">
           // SCRIPTING &amp; INFRASTRUCTURE
@@ -813,7 +761,6 @@
   <div id="projects-panel" class="side-panel right-panel">
     <div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
     
-    <!-- Panel Header -->
     <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-primary); display: flex; align-items: center; justify-content: space-between; background: rgba(0, 245, 255, 0.05);">
       <div style="display: flex; align-items: center; gap: 8px;">
         <i data-lucide="shield-alert" style="width: 15px; height: 15px; color: var(--cyan-primary);"></i>
@@ -822,10 +769,8 @@
       <button onclick="closeAllPanels()" style="background: none; border: none; color: #ff3b3b; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
 
-    <!-- Panel Scrollable Content -->
     <div style="flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 16px;">
-      <!-- Project 1: SecureFlow -->
-      <div style="padding: 14px; background: rgba(0, 245, 255, 0.04); border: 1px solid var(--border-primary); border-radius: 3px; position: relative;">
+      <div style="padding: 14px; background: rgba(0, 245, 255, 0.04); border: 1px solid var(--border-primary); border-radius: 3px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
           <span style="font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700; color: var(--gold-primary);">OP-001 // DEVSECOPS</span>
           <span style="font-size: 8px; font-weight: 800; background: rgba(0,255,136,0.15); border: 1px solid var(--alert-green); color: var(--alert-green); padding: 1px 5px; border-radius: 2px;">STATUS: ACTIVE</span>
@@ -837,16 +782,13 @@
         <div style="font-size: 8.5px; color: var(--cyan-primary); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">
           STACK: Jenkins &middot; Docker &middot; Gitleaks &middot; Semgrep &middot; Trivy &middot; OWASP ZAP
         </div>
-        <div style="display: flex; gap: 8px;">
-          <a href="https://github.com/abhienix/SecureFlow-CICD-Pipeline" target="_blank" rel="noopener noreferrer" class="btn-tactical" style="font-size: 8.5px; padding: 4px 10px;">
-            <i data-lucide="github" style="width: 12px; height: 12px;"></i>
-            <span>VIEW CODE</span>
-          </a>
-        </div>
+        <a href="https://github.com/abhienix/SecureFlow-CICD-Pipeline" target="_blank" rel="noopener noreferrer" class="btn-tactical" style="font-size: 8.5px; padding: 4px 10px;">
+          <i data-lucide="github" style="width: 12px; height: 12px;"></i>
+          <span>VIEW CODE</span>
+        </a>
       </div>
 
-      <!-- Project 2: SentryVault -->
-      <div style="padding: 14px; background: rgba(255, 140, 0, 0.04); border: 1px solid rgba(255, 140, 0, 0.35); border-radius: 3px; position: relative;">
+      <div style="padding: 14px; background: rgba(255, 140, 0, 0.04); border: 1px solid rgba(255, 140, 0, 0.35); border-radius: 3px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
           <span style="font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700; color: var(--alert-orange);">OP-002 // SOC DEFENSE</span>
           <span style="font-size: 8px; font-weight: 800; background: rgba(0,245,255,0.15); border: 1px solid var(--cyan-primary); color: var(--cyan-primary); padding: 1px 5px; border-radius: 2px;">STATUS: MONITORING</span>
@@ -858,16 +800,13 @@
         <div style="font-size: 8.5px; color: var(--alert-orange); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">
           STACK: Wazuh SIEM &middot; Suricata &middot; ELK Stack &middot; Bash SOAR &middot; Linux
         </div>
-        <div style="display: flex; gap: 8px;">
-          <a href="https://github.com/abhienix/SentryVault-SIEM" target="_blank" rel="noopener noreferrer" class="btn-tactical btn-gold" style="font-size: 8.5px; padding: 4px 10px;">
-            <i data-lucide="github" style="width: 12px; height: 12px;"></i>
-            <span>VIEW CODE</span>
-          </a>
-        </div>
+        <a href="https://github.com/abhienix/SentryVault-SIEM" target="_blank" rel="noopener noreferrer" class="btn-tactical btn-gold" style="font-size: 8.5px; padding: 4px 10px;">
+          <i data-lucide="github" style="width: 12px; height: 12px;"></i>
+          <span>VIEW CODE</span>
+        </a>
       </div>
 
-      <!-- Project 3: Red Flag Detector -->
-      <div style="padding: 14px; background: rgba(0, 255, 136, 0.04); border: 1px solid rgba(0, 255, 136, 0.35); border-radius: 3px; position: relative;">
+      <div style="padding: 14px; background: rgba(0, 255, 136, 0.04); border: 1px solid rgba(0, 255, 136, 0.35); border-radius: 3px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
           <span style="font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700; color: var(--alert-green);">OP-003 // OSINT RECON</span>
           <span style="font-size: 8px; font-weight: 800; background: rgba(0,255,136,0.15); border: 1px solid var(--alert-green); color: var(--alert-green); padding: 1px 5px; border-radius: 2px;">STATUS: LIVE</span>
@@ -879,12 +818,10 @@
         <div style="font-size: 8.5px; color: var(--alert-green); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">
           STACK: Python &middot; Shodan API &middot; VirusTotal &middot; RegEx &middot; TLS Audit
         </div>
-        <div style="display: flex; gap: 8px;">
-          <a href="https://github.com/abhienix/RedFlag-Threat-Detector" target="_blank" rel="noopener noreferrer" class="btn-tactical" style="font-size: 8.5px; padding: 4px 10px;">
-            <i data-lucide="github" style="width: 12px; height: 12px;"></i>
-            <span>VIEW CODE</span>
-          </a>
-        </div>
+        <a href="https://github.com/abhienix/RedFlag-Threat-Detector" target="_blank" rel="noopener noreferrer" class="btn-tactical" style="font-size: 8.5px; padding: 4px 10px;">
+          <i data-lucide="github" style="width: 12px; height: 12px;"></i>
+          <span>VIEW CODE</span>
+        </a>
       </div>
     </div>
   </div>
@@ -894,7 +831,6 @@
   <div id="contact-panel" class="side-panel right-panel">
     <div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
     
-    <!-- Panel Header -->
     <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-primary); display: flex; align-items: center; justify-content: space-between; background: rgba(0, 245, 255, 0.05);">
       <div style="display: flex; align-items: center; gap: 8px;">
         <i data-lucide="radio-tower" style="width: 15px; height: 15px; color: var(--cyan-primary);"></i>
@@ -903,7 +839,6 @@
       <button onclick="closeAllPanels()" style="background: none; border: none; color: #ff3b3b; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
 
-    <!-- Panel Scrollable Content -->
     <div style="flex: 1; overflow-y: auto; padding: 18px;">
       <p style="font-size: 10px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
         Transmit an encrypted message directly to Abhimanyu Kumar. Response SLA &lt; 24 hours.
@@ -939,8 +874,7 @@
         ✓ PAYLOAD ENCRYPTED &amp; TRANSMITTED SUCCESSFULLY!
       </div>
 
-      <!-- Direct Channels -->
-      <div style="margin-top: 24px; pt: 14px; border-top: 1px solid rgba(0, 245, 255, 0.2);">
+      <div style="margin-top: 24px; padding-top: 14px; border-top: 1px solid rgba(0, 245, 255, 0.2);">
         <div style="font-family: 'Orbitron', sans-serif; font-size: 8.5px; color: var(--gold-primary); letter-spacing: 0.1em; margin-bottom: 8px;">// DIRECT SECURE CHANNELS</div>
         <div style="font-size: 10px; color: var(--text-secondary); line-height: 1.8;">
           <div>📧 <strong style="color: #fff;">abhimanyu9272@gmail.com</strong></div>
@@ -1059,7 +993,7 @@
 
 
   <!-- ══════════════════════════════════════════════════════
-       CLIENT-SIDE JAVASCRIPT & 3D GLOBE ENGINE
+       CLIENT-SIDE JAVASCRIPT & MULTI-API DATA ENGINE
   ══════════════════════════════════════════════════════ -->
   <script>
     // ── Global Layer States ──
@@ -1067,14 +1001,15 @@
       cables: true,
       maritime: true,
       threats: true,
-      cctv: true,
-      satellites: true,
+      flights: true,
+      earthquakes: true,
       dayNight: true,
       gpsLock: true,
     };
 
     let worldGlobe = null;
-    let autoRotate = true;
+    let liveFlights = [];
+    let liveEarthquakes = [];
 
     // ── 1. SPLASH SCREEN SEQUENCE ──
     window.addEventListener('DOMContentLoaded', () => {
@@ -1084,7 +1019,6 @@
       const progressBar = document.getElementById('splash-progress');
       const statusText = document.getElementById('splash-status');
 
-      // Animate letters in one-by-one
       letters.forEach((l, idx) => {
         setTimeout(() => {
           l.style.opacity = '1';
@@ -1092,10 +1026,9 @@
         }, 200 + idx * 120);
       });
 
-      // Progress messages
       const logs = [
         { p: 20, msg: "ESTABLISHING SECURE CONNECTION..." },
-        { p: 45, msg: "LOADING THREAT INTELLIGENCE..." },
+        { p: 45, msg: "LOADING LIVE THREAT FEEDS & OPENSKY ADS-B..." },
         { p: 70, msg: "CALIBRATING SENSORS & SUBSEA CABLES..." },
         { p: 90, msg: "OPERATOR IDENTIFIED — ABHIMANYU KUMAR" },
         { p: 100, msg: "SYSTEM READY // ACCESS GRANTED" }
@@ -1108,7 +1041,6 @@
         }, 400 + i * 550);
       });
 
-      // Fade out splash after 3.2s
       setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         splash.style.opacity = '0';
@@ -1117,9 +1049,11 @@
         }, 800);
       }, 3400);
 
-      // Initialize Zulu Clock
       setInterval(updateZuluClock, 1000);
       updateZuluClock();
+
+      // Fetch live APIs in background
+      fetchLiveFeeds();
 
       // Initialize 3D Globe
       initGlobe();
@@ -1134,10 +1068,77 @@
       document.getElementById('zulu-clock').innerText = `ZULU ${h}:${m}:${s}Z`;
     }
 
-    // ── 3. GLOBE DATA DATASETS ──
-    const PUNE_BASE = { lat: 18.5204, lon: 73.8567, name: "STATION PUNE // ABHIMANYU KUMAR (BASE)" };
+    // ── 3. FETCH LIVE OSIRIS-STYLE APIS ──
+    async function fetchLiveFeeds() {
+      // 1. Crypto Market Prices
+      try {
+        const mRes = await fetch('/api/markets');
+        if (mRes.ok) {
+          const mData = await mRes.json();
+          if (mData.data) {
+            const btc = mData.data.btc;
+            const eth = mData.data.eth;
+            const sol = mData.data.sol;
+            const cryptoEl = document.getElementById('ticker-crypto');
+            if (cryptoEl) {
+              cryptoEl.innerHTML = `$BTC: $${(btc.usd/1000).toFixed(1)}K ${btc.change_24h >= 0 ? '+' : ''}${btc.change_24h.toFixed(1)}% &middot; $ETH: $${eth.usd.toLocaleString()} &middot; $SOL: $${sol.usd} ${sol.change_24h >= 0 ? '+' : ''}${sol.change_24h.toFixed(1)}%`;
+            }
+          }
+        }
+      } catch(e) {}
 
-    // Threat Arcs
+      // 2. Space Weather NOAA
+      try {
+        const sRes = await fetch('/api/space-weather');
+        if (sRes.ok) {
+          const sData = await sRes.json();
+          if (sData.data && sData.data.kp) {
+            const chip = document.getElementById('chip-space-weather');
+            if (chip) chip.innerText = `SOLAR: Kp${sData.data.kp}`;
+          }
+        }
+      } catch(e) {}
+
+      // 3. Live OpenSky Flights
+      try {
+        const fRes = await fetch('/api/flights');
+        if (fRes.ok) {
+          const fData = await fRes.json();
+          if (fData.data && Array.isArray(fData.data)) {
+            liveFlights = fData.data.slice(0, 150).map(f => ({
+              lat: f.lat,
+              lng: f.lon,
+              size: 0.22,
+              color: '#00F5FF',
+              label: `✈ [FLIGHT] ${f.callsign} (${f.country}) Alt: ${f.altitude}m`,
+              type: 'flight'
+            }));
+            if (worldGlobe) worldGlobe.pointsData(getCombinedPoints());
+          }
+        }
+      } catch(e) {}
+
+      // 4. Live USGS Earthquakes
+      try {
+        const eqRes = await fetch('/api/earthquakes');
+        if (eqRes.ok) {
+          const eqData = await eqRes.json();
+          if (eqData.data && Array.isArray(eqData.data)) {
+            liveEarthquakes = eqData.data.slice(0, 50).map(eq => ({
+              lat: eq.lat,
+              lng: eq.lon,
+              size: Math.max(0.3, eq.mag * 0.1),
+              color: eq.mag >= 5.0 ? '#FF3B3B' : '#FF8C00',
+              label: `⚡ [USGS] M${eq.mag} &middot; ${eq.place}`,
+              type: 'earthquake'
+            }));
+            if (worldGlobe) worldGlobe.pointsData(getCombinedPoints());
+          }
+        }
+      } catch(e) {}
+    }
+
+    // ── 4. GLOBE DATA DATASETS ──
     const THREAT_ARCS = [
       { startLat: 18.5204, startLng: 73.8567, endLat: 55.7558, endLng: 37.6173, color: ['#00F5FF', '#FF3B3B'], label: 'PUNE → MOSCOW (APT-29 Telemetry)' },
       { startLat: 18.5204, startLng: 73.8567, endLat: 39.9042, endLng: 116.4074, color: ['#00F5FF', '#FF3B3B'], label: 'PUNE → BEIJING (Port Scan Spike)' },
@@ -1146,48 +1147,29 @@
       { startLat: 18.5204, startLng: 73.8567, endLat: 1.3521, endLng: 103.8198, color: ['#00F5FF', '#FF8C00'], label: 'PUNE → SINGAPORE (Strait Transit Radar)' },
     ];
 
-    // Surface Points
     const SURFACE_POINTS = [
-      // Base
       { lat: 18.5204, lng: 73.8567, size: 0.9, color: '#D4AF37', label: '★ STATION PUNE // OPERATOR: ABHIMANYU KUMAR', type: 'base' },
-
-      // CISA KEV Exploit Hotspots (Red)
       { lat: 38.9072, lng: -77.0369, size: 0.6, color: '#FF3B3B', label: 'CVE-2024-38077 Windows RDP RCE [CVSS 9.8]', type: 'threat' },
       { lat: 50.1109, lng: 8.6821, size: 0.55, color: '#FF3B3B', label: 'regreSSHion CVE-2024-6387 OpenSSH RCE', type: 'threat' },
       { lat: 31.2304, lng: 121.4737, size: 0.5, color: '#FF8C00', label: 'CVE-2024-21413 Outlook Moniker Exploit', type: 'threat' },
       { lat: 55.7558, lng: 37.6173, size: 0.65, color: '#FF3B3B', label: 'SSH Brute-force Ingestion Subnet [ACTIVE]', type: 'threat' },
-      { lat: 14.5995, lng: 120.9842, size: 0.45, color: '#FF8C00', label: 'South China Sea Cyber Recon Probe', type: 'threat' },
-
-      // CCTV & Recon Hubs (Cyan)
-      { lat: 35.6762, lng: 139.6503, size: 0.45, color: '#00F5FF', label: 'CAM-TKO-01: Tokyo Shinjuku Node [4K RTSP]', type: 'cctv' },
-      { lat: 51.5074, lng: -0.1278, size: 0.45, color: '#00F5FF', label: 'CAM-LDN-04: London Tower Bridge [WebRTC]', type: 'cctv' },
-      { lat: 37.7749, lng: -122.4194, size: 0.45, color: '#00F5FF', label: 'CAM-SFO-02: San Francisco Bay Transbay [TLS]', type: 'cctv' },
-      { lat: 1.3521, lng: 103.8198, size: 0.45, color: '#00F5FF', label: 'CAM-SGP-03: Singapore Strait Radar [4K SRT]', type: 'cctv' },
-      { lat: 12.9716, lng: 77.5946, size: 0.45, color: '#00F5FF', label: 'CAM-BLR-01: Bengaluru Tech Hub [Encrypted]', type: 'cctv' },
     ];
 
-    // Undersea Fiber Cables (GeoJSON lines)
     const CABLE_PATHS = [
-      // Transatlantic
       [[ -4.5, 50.8 ], [ -25.0, 47.0 ], [ -55.0, 42.0 ], [ -74.0, 40.7 ]],
-      // SEA-ME-WE / Suez to India
       [[ 5.4, 43.3 ], [ 15.0, 37.0 ], [ 34.0, 27.5 ], [ 44.0, 12.5 ], [ 72.8, 18.9 ]],
-      // India to Singapore
       [[ 72.8, 18.9 ], [ 80.2, 13.0 ], [ 95.3, 5.5 ], [ 103.8, 1.3 ]],
-      // Singapore to Japan
       [[ 103.8, 1.3 ], [ 114.2, 22.3 ], [ 121.5, 25.0 ], [ 139.8, 35.6 ]],
-      // Transpacific
       [[ 139.8, 35.6 ], [ 175.0, 34.0 ], [ -157.8, 21.3 ], [ -122.4, 37.7 ]]
     ];
 
-    // Maritime Vessel Clusters
     const MARITIME_VESSELS = [];
     const chokes = [
-      { lat: 1.25, lon: 103.8, spread: 2.0, count: 40 }, // Singapore
-      { lat: 26.5, lon: 56.2, spread: 1.5, count: 30 }, // Hormuz
-      { lat: 12.6, lon: 43.4, spread: 1.8, count: 25 }, // Bab-el-Mandeb
-      { lat: 31.2, lon: 122.5, spread: 2.0, count: 35 }, // Shanghai
-      { lat: 51.0, lon: 1.5, spread: 1.5, count: 25 }   // Dover
+      { lat: 1.25, lon: 103.8, spread: 2.0, count: 40 },
+      { lat: 26.5, lon: 56.2, spread: 1.5, count: 30 },
+      { lat: 12.6, lon: 43.4, spread: 1.8, count: 25 },
+      { lat: 31.2, lon: 122.5, spread: 2.0, count: 35 },
+      { lat: 51.0, lon: 1.5, spread: 1.5, count: 25 }
     ];
     chokes.forEach(c => {
       for(let i=0; i<c.count; i++) {
@@ -1201,7 +1183,7 @@
       }
     });
 
-    // ── 4. INITIALIZE GLOBE.GL ──
+    // ── 5. INITIALIZE GLOBE.GL ──
     function initGlobe() {
       const elem = document.getElementById('globe-container');
 
@@ -1213,7 +1195,6 @@
         .showAtmosphere(true)
         .atmosphereColor('#00E5FF')
         .atmosphereAltitude(0.18)
-        // Arcs
         .arcsData(layerState.threats ? THREAT_ARCS : [])
         .arcColor('color')
         .arcDashLength(0.4)
@@ -1221,34 +1202,28 @@
         .arcDashAnimateTime(2000)
         .arcStroke(0.6)
         .arcLabel('label')
-        // Points
         .pointsData(getCombinedPoints())
         .pointColor('color')
         .pointAltitude(0.04)
         .pointRadius('size')
         .pointLabel('label')
-        // Paths (Cables)
         .pathsData(layerState.cables ? CABLE_PATHS : [])
         .pathColor(() => '#00E5FF')
         .pathDashLength(0.1)
         .pathDashGap(0.02)
         .pathDashAnimateTime(15000)
         .pathStroke(0.3)
-        // Hover
         .onPointClick((point) => {
           showMarkerPopup(point);
         });
 
-      // Position camera over India front-and-center (OSIRIS style)
       worldGlobe.pointOfView({ lat: 20.0, lng: 78.0, altitude: 2.2 }, 1500);
 
-      // Auto-rotation
       const controls = worldGlobe.controls();
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.6;
       controls.enableDamping = true;
 
-      // Track cursor coordinates
       elem.addEventListener('mousemove', (e) => {
         const coords = worldGlobe.toGeoCoords({ x: e.clientX, y: e.clientY });
         if (coords) {
@@ -1260,21 +1235,24 @@
     function getCombinedPoints() {
       let pts = [];
       if (layerState.gpsLock) {
-        pts.push(SURFACE_POINTS[0]); // Station Pune Base
+        pts.push(SURFACE_POINTS[0]);
       }
       if (layerState.threats) {
         pts = pts.concat(SURFACE_POINTS.filter(p => p.type === 'threat'));
       }
-      if (layerState.cctv) {
-        pts = pts.concat(SURFACE_POINTS.filter(p => p.type === 'cctv'));
-      }
       if (layerState.maritime) {
         pts = pts.concat(MARITIME_VESSELS);
+      }
+      if (layerState.flights) {
+        pts = pts.concat(liveFlights);
+      }
+      if (layerState.earthquakes) {
+        pts = pts.concat(liveEarthquakes);
       }
       return pts;
     }
 
-    // ── 5. LAYER TOGGLE CONTROLS ──
+    // ── 6. LAYER TOGGLE CONTROLS ──
     function toggleLayer(name) {
       layerState[name] = !layerState[name];
       const btn = document.querySelector(`.layer-btn[data-layer="${name}"]`);
@@ -1290,11 +1268,9 @@
         }
       }
 
-      // Update active layer count chip
       let activeCount = Object.values(layerState).filter(Boolean).length;
       document.getElementById('chip-layer-count').innerText = `${activeCount}/7 LAYERS`;
 
-      // Refresh globe layers
       if (worldGlobe) {
         worldGlobe.pointsData(getCombinedPoints());
         worldGlobe.arcsData(layerState.threats ? THREAT_ARCS : []);
@@ -1302,16 +1278,12 @@
       }
     }
 
-    // ── 6. PANEL SLIDE-OVER MANAGEMENT ──
+    // ── 7. PANEL SLIDE-OVER MANAGEMENT ──
     function openPanel(panelId) {
       const panel = document.getElementById(panelId);
       const isOpen = panel.classList.contains('open');
-
       closeAllPanels();
-
-      if (!isOpen) {
-        panel.classList.add('open');
-      }
+      if (!isOpen) panel.classList.add('open');
     }
 
     function closeAllPanels() {
@@ -1319,7 +1291,7 @@
       document.getElementById('terminal-modal').style.display = 'none';
     }
 
-    // ── 7. OSINT TERMINAL SHELL ──
+    // ── 8. OSINT TERMINAL SHELL ──
     function toggleTerminalModal() {
       const modal = document.getElementById('terminal-modal');
       if (modal.style.display === 'flex') {
@@ -1364,7 +1336,7 @@
       }
     }
 
-    // ── 8. CONTACT SUBMISSION ──
+    // ── 9. CONTACT SUBMISSION ──
     function handleContactSubmit(e) {
       e.preventDefault();
       const form = document.getElementById('contact-form');
@@ -1379,7 +1351,7 @@
       }, 4000);
     }
 
-    // ── 9. MAP MODES & SHORTCUTS ──
+    // ── 10. MAP MODES & SHORTCUTS ──
     function setMapMode(mode) {
       document.querySelectorAll('.map-mode-btn').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
@@ -1406,9 +1378,8 @@
       m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    // ── 10. KEYBOARD EVENT LISTENER ──
+    // ── 11. KEYBOARD EVENT LISTENER ──
     window.addEventListener('keydown', (e) => {
-      // Ignore if typing in input
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
       const key = e.key.toUpperCase();
@@ -1432,7 +1403,7 @@
       } else if (key === '?') {
         toggleShortcutsModal();
       } else if (['1','2','3','4','5','6','7'].includes(key)) {
-        const layers = ['cables', 'maritime', 'threats', 'cctv', 'satellites', 'dayNight', 'gpsLock'];
+        const layers = ['cables', 'maritime', 'threats', 'flights', 'earthquakes', 'dayNight', 'gpsLock'];
         const idx = parseInt(key) - 1;
         if (layers[idx]) toggleLayer(layers[idx]);
       }
@@ -1443,7 +1414,6 @@
     }
   </script>
 
-  <!-- Mobile Viewport Fallback Helper Style -->
   <style>
     @media (max-width: 768px) {
       .hidden-mobile {
